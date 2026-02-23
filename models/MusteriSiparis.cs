@@ -8,6 +8,6 @@
         
         public int Miktar { get; set; } 
         public DateTime SiparisTarihi { get; set; } = DateTime.Now;
-
+        
     }
 }

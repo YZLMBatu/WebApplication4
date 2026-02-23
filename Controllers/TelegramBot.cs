@@ -59,6 +59,34 @@ public class TelegramBotService : BackgroundService
                 var musteri = context.Musteriler.Find(enIyiMusteri?.Id);
                 await botClient.SendMessage(chatId, $"Sadık Müşteri: {musteri?.Ad}\n📊 Toplam Sipariş: {enIyiMusteri?.Toplam} adet");
             }
+            else if (messageText == "/sonsiparis")
+            {
+                var Sonsiparis = context.MusteriSiparisleri.OrderByDescending(s => s.SiparisTarihi).FirstOrDefault();
+                var musteri = context.Musteriler.Find(Sonsiparis?.MusteriId);
+                await botClient.SendMessage(chatId, $"Son Sipariş: {Sonsiparis?.SiparisTarihi}\nMüşteri: {musteri?.Ad}\nMiktar: {Sonsiparis?.Miktar} ");
+            }
+            else if(messageText == "/musteriler")
+            {
+                var musteriler = context.Musteriler.ToList();
+                var rapor = musteriler.Any()
+                    ? "Müşteriler:\n" + string.Join("\n", musteriler.Select(m => $"{m.Ad}  {m.Telefon} {m.KayitTarihi}"))
+                    : "Kayıtlı müşteri bulunmamaktadır.";
+                await botClient.SendMessage(chatId, rapor);
+            }
+            else if (!string.IsNullOrEmpty(messageText))
+            {
+                await botClient.SendMessage(chatId, "Bilinmeyen komut. Lütfen geçerli bir komut girin.");
+            }
+            else if(messageText == "/yardım")
+            {
+                var yardimMesaji = "Kullanılabilir Komutlar:\n" +
+                                 "/kasa - Kasa durumunu gösterir\n" +
+                                 "/stok - Kritik stok seviyesindeki ürünleri listeler\n" +
+                                 "/eniyi - En çok sipariş veren müşteriyi gösterir\n" +
+                                 "/sonsiparis - Son siparişi ve müşteri bilgilerini gösterir\n" +
+                                 "/musteriler - Tüm müşterileri listeler\n" +
+                                 "/yardım - Komut listesini gösterir";
+            }
         }
     }
 
