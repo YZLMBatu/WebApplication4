@@ -19,6 +19,10 @@ public class TelegramBotService : BackgroundService
     {
         var receiverOptions = new ReceiverOptions { AllowedUpdates = { } };
         _botClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync, receiverOptions, stoppingToken);
+        
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("X-Api-Key", "GirisimciBatuhan_2026_OzelAnahtar");
+        
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -57,7 +61,7 @@ public class TelegramBotService : BackgroundService
                     .FirstOrDefault();
 
                 var musteri = context.Musteriler.Find(enIyiMusteri?.Id);
-                await botClient.SendMessage(chatId, $"Sadık Müşteri: {musteri?.Ad}\n📊 Toplam Sipariş: {enIyiMusteri?.Toplam} adet");
+                await botClient.SendMessage(chatId, $"Sadık Müşteri: {musteri?.Ad}\nToplam Sipariş: {enIyiMusteri?.Toplam} adet");
             }
             else if (messageText == "/sonsiparis")
             {
@@ -77,16 +81,10 @@ public class TelegramBotService : BackgroundService
             {
                 await botClient.SendMessage(chatId, "Bilinmeyen komut. Lütfen geçerli bir komut girin.");
             }
-            else if(messageText == "/yardım")
-            {
-                var yardimMesaji = "Kullanılabilir Komutlar:\n" +
-                                 "/kasa - Kasa durumunu gösterir\n" +
-                                 "/stok - Kritik stok seviyesindeki ürünleri listeler\n" +
-                                 "/eniyi - En çok sipariş veren müşteriyi gösterir\n" +
-                                 "/sonsiparis - Son siparişi ve müşteri bilgilerini gösterir\n" +
-                                 "/musteriler - Tüm müşterileri listeler\n" +
-                                 "/yardım - Komut listesini gösterir";
-            }
+          
+            
+                
+            
         }
     }
 
